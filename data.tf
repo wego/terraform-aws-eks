@@ -135,3 +135,21 @@ data "aws_iam_instance_profile" "custom_worker_group_launch_template_mixed_iam_i
   count = "${var.manage_worker_iam_resources ? 0 : var.worker_group_launch_template_mixed_count}"
   name  = "${lookup(var.worker_groups_launch_template_mixed[count.index], "iam_instance_profile_name", local.workers_group_defaults["iam_instance_profile_name"])}"
 }
+
+data "aws_iam_policy_document" "oidc_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_iam_openid_connect_provider.this.url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-node"]
+    }
+
+    principals {
+      identifiers = ["${aws_iam_openid_connect_provider.this.arn}"]
+      type        = "Federated"
+    }
+  }
+}

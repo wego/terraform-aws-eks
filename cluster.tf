@@ -81,3 +81,14 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = "${aws_iam_role.cluster.name}"
 }
+
+resource "aws_iam_openid_connect_provider" "this" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = []
+  url             = "${aws_eks_cluster.this.identity.0.oidc.0.issuer}"
+}
+
+resource "aws_iam_role" "example" {
+  assume_role_policy = "${data.aws_iam_policy_document.oidc_assume_role_policy.json}"
+  name               = "AmazonEKSClusterAutoscalerRole"
+}
