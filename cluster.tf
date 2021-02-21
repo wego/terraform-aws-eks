@@ -90,5 +90,5 @@ resource "aws_iam_openid_connect_provider" "this" {
 
 resource "aws_iam_role" "example" {
   assume_role_policy = "${data.aws_iam_policy_document.oidc_assume_role_policy.json}"
-  name               = "AmazonEKSClusterAutoscalerRole"
+  name               = "AmazonEKSClusterAutoscalerRole-${var.cluster_name}"
 }
