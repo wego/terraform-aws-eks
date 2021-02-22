@@ -88,7 +88,7 @@ resource "aws_iam_openid_connect_provider" "this" {
   url             = "${aws_eks_cluster.this.identity.0.oidc.0.issuer}"
 }
 
-resource "aws_iam_role" "example" {
+resource "aws_iam_role" "oidc" {
   assume_role_policy = "${data.aws_iam_policy_document.oidc_assume_role_policy.json}"
   name               = "AmazonEKSClusterAutoscalerRole-${var.cluster_name}"
 }
